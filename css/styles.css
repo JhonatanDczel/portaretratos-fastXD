@@ -1,0 +1,38 @@
+/* css/styles.css */
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilos para las transiciones de fade */
+.transition-fade {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.hidden-opacity {
+  opacity: 0;
+}
+
+.visible-opacity {
+  opacity: 1;
+}
+
+/* Estilos para arrastrar y soltar */
+#dragDropArea.drag-over {
+  border-color: #3b82f6; /* Azul Tailwind */
+  background-color: #e0f2fe; /* Azul claro */
+}
+
+/* Estilos para las notificaciones */
+#notification {
+  z-index: 1000;
+}
+
+/* Estilos para overlays de texto */
+.overlay {
+  position: absolute;
+  /* Puedes agregar más estilos aquí según las necesidades */
+}
