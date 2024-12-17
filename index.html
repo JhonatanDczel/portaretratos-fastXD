@@ -13,267 +13,299 @@
     
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Mejorar el aspecto del selector de color */
+      input[type="color"] {
+        width: 100%;
+        height: 40px;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+      }
+      
+      /* Estilo para la zona de arrastrar y soltar */
+      #dragDropArea {
+        transition: border-color 0.3s, background-color 0.3s;
+      }
+      
+      #dragDropArea.dragover {
+        border-color: #3b82f6; /* Azul Tailwind */
+        background-color: #e0f2fe; /* Azul claro */
+      }
+    </style>
   </head>
   <body class="bg-gray-100 font-sans h-full">
-    <div class="flex justify-center items-center min-h-screen">
+    <div class="flex justify-center items-center min-h-screen p-4">
       <!-- Contenedor de controles -->
-      <div class="bg-white p-6 rounded-lg shadow-md w-80 mr-4">
-        <h3 class="text-xl font-semibold mb-4 flex items-center">
+      <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-[30rem]">
+        <h3 class="text-2xl font-semibold mb-6 flex items-center">
           <!-- Icono de control -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
           Controlador de Portaretratos
         </h3>
         
-        <!-- Botones de acción -->
-        <button
-          onclick="changeImage()"
-          class="w-full py-2 mb-3 bg-[#0B1A33] text-white rounded-md hover:bg-[#1f2a44] transition-colors flex items-center justify-center"
-          aria-label="Cargar Imagen"
-        >
-          <!-- Icono de imagen -->
-          <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16v1H4v-1z" />
-          </svg>
-          Cargar Imagen
-        </button>
-        <button
-          onclick="changeVideo()"
-          class="w-full py-2 mb-3 bg-[#0B1A33] text-white rounded-md hover:bg-[#1f2a44] transition-colors flex items-center justify-center"
-          aria-label="Cargar Video"
-        >
-          <!-- Icono de video -->
-          <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m0 0l-4.553 2.276A1 1 0 019 16.382V7.618a1 1 0 011.447-.894L15 10z" />
-          </svg>
-          Cargar Video
-        </button>
-
-        <!-- Slideshow Controls -->
-        <div class="mb-4">
-          <h4 class="text-lg font-semibold mb-2">Slideshow</h4>
-          <button
-            onclick="startSlideshow()"
-            class="w-full py-2 mb-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center justify-center"
-            aria-label="Iniciar Slideshow"
-          >
-            <!-- Icono de play -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M6 4l12 6-12 6V4z" />
-            </svg>
-            Iniciar Slideshow
-          </button>
-          <button
-            onclick="pauseSlideshow()"
-            class="w-full py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center justify-center"
-            aria-label="Pausar Slideshow"
-          >
-            <!-- Icono de pausa -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M6 4h2v12H6V4zM12 4h2v12h-2V4z" />
-            </svg>
-            Pausar Slideshow
-          </button>
-        </div>
-
-        <!-- Selector de color de fondo -->
-        <div class="mb-4">
-          <h4 class="text-lg font-semibold mb-2">Fondo de Color</h4>
-          <select
-            id="colorPicker"
-            onchange="changeBackgroundColor(event)"
-            class="w-full p-2 border border-gray-300 rounded-md mb-2"
-            aria-label="Seleccionar Color de Fondo"
-          >
-            <option value="">Selecciona un color</option>
-            <option value="bg-pink-100">Rosa Pastel</option>
-            <option value="bg-blue-100">Azul Pastel</option>
-            <option value="bg-green-100">Verde Pastel</option>
-            <option value="bg-yellow-100">Amarillo Pastel</option>
-            <option value="bg-purple-100">Púrpura Pastel</option>
-            <option value="bg-teal-100">Verde Azulado Pastel</option>
-            <option value="bg-orange-100">Naranja Pastel</option>
-            <option value="bg-indigo-100">Índigo Pastel</option>
-          </select>
-
-          <h4 class="text-lg font-semibold mb-2">Fondo de Color Personalizado</h4>
-          <input
-            type="color"
-            id="customColorPicker"
-            onchange="changeCustomBackgroundColor(event)"
-            class="w-full p-2 border border-gray-300 rounded-md mb-4"
-            aria-label="Seleccionar Color Personalizado"
-          />
-        </div>
-
-        <!-- Agregar Texto Superpuesto -->
-        <div class="mb-4">
-          <h4 class="text-lg font-semibold mb-2">Texto Superpuesto</h4>
-          <input
-            type="text"
-            id="overlayText"
-            placeholder="Ingrese el texto"
-            class="w-full p-2 border border-gray-300 rounded-md mb-2"
-            aria-label="Ingresar Texto Superpuesto"
-          />
-          <input
-            type="color"
-            id="textColorPicker"
-            onchange="changeTextColor(event)"
-            class="w-full p-2 border border-gray-300 rounded-md mb-2"
-            aria-label="Seleccionar Color de Texto"
-          />
-          <button
-            onclick="addOverlayText()"
-            class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center justify-center"
-            aria-label="Añadir Texto Superpuesto"
-          >
-            <!-- Icono de texto -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M5 4h10v2H5V4zm0 4h10v2H5V8zm0 4h10v2H5v-2z" />
-            </svg>
-            Añadir Texto
-          </button>
-
-          <!-- Posición del Texto -->
-          <h4 class="text-lg font-semibold mt-4 mb-2">Posición del Texto</h4>
-          <select
-            id="textPositionPicker"
-            onchange="changeTextPosition(event)"
-            class="w-full p-2 border border-gray-300 rounded-md"
-            aria-label="Seleccionar Posición del Texto"
-          >
-            <option value="top-left">Arriba Izquierda</option>
-            <option value="top-center">Arriba Centro</option>
-            <option value="top-right">Arriba Derecha</option>
-            <option value="center-left">Centro Izquierda</option>
-            <option value="center">Centro</option>
-            <option value="center-right">Centro Derecha</option>
-            <option value="bottom-left">Abajo Izquierda</option>
-            <option value="bottom-center">Abajo Centro</option>
-            <option value="bottom-right">Abajo Derecha</option>
-          </select>
-        </div>
-
-        <!-- Filtros de Imagen/Video -->
-        <div class="mb-4">
-          <h4 class="text-lg font-semibold mb-2">Filtros de Imagen/Video</h4>
-          <select
-            id="filterPicker"
-            onchange="applyFilter(event)"
-            class="w-full p-2 border border-gray-300 rounded-md mb-2"
-            aria-label="Seleccionar Filtro"
-          >
-            <option value="none">Ninguno</option>
-            <option value="grayscale">Blanco y Negro</option>
-            <option value="sepia">Sepia</option>
-            <option value="blur">Desenfoque</option>
-            <option value="brightness">Brillo</option>
-          </select>
-        </div>
-
-        <!-- Control de Volumen -->
-        <div class="mb-4">
-          <h4 class="text-lg font-semibold mb-2">Control de Volumen</h4>
-          <input
-            type="range"
-            id="volumeControl"
-            min="0"
-            max="1"
-            step="0.01"
-            onchange="adjustVolume(event)"
-            class="w-full"
-            aria-label="Control de Volumen"
-          />
-        </div>
-
-        <!-- Modo Pantalla Completa -->
-        <div class="mb-4">
-          <button
-            onclick="toggleFullScreen()"
-            class="w-full py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors flex items-center justify-center"
-            aria-label="Activar Pantalla Completa"
-          >
-            <!-- Icono de pantalla completa -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M4 3a1 1 0 00-1 1v4a1 1 0 001 1h1v2H3a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1v-1h2v1a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 00-1-1h-1v-2h1a1 1 0 001-1V4a1 1 0 00-1-1H4z" />
-            </svg>
-            Pantalla Completa
-          </button>
-        </div>
-
-        <!-- Controles de Guardar/Cargar Configuración -->
-        <div class="mb-4">
-          <button
-            onclick="saveConfiguration()"
-            class="w-full py-2 mb-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors flex items-center justify-center"
-            aria-label="Guardar Configuración"
-          >
-            <!-- Icono de guardar -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M17 3a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V7l-4-4z" />
-            </svg>
-            Guardar Configuración
-          </button>
-          <button
-            onclick="loadConfiguration()"
-            class="w-full py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors flex items-center justify-center"
-            aria-label="Cargar Configuración"
-          >
-            <!-- Icono de cargar -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M13 7V3L6 10l7 7v-4h4V7h-4z" />
-            </svg>
-            Cargar Configuración
-          </button>
-        </div>
-
-        <!-- Controles de Deshacer/Rehacer -->
-        <div class="mb-4">
-          <h4 class="text-lg font-semibold mb-2">Historial de Cambios</h4>
-          <button
-            onclick="undoAction()"
-            class="w-full py-2 mb-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors flex items-center justify-center"
-            aria-label="Deshacer Acción"
-          >
-            <!-- Icono de deshacer -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M5 4a1 1 0 011-1h5a1 1 0 010 2H7.414l3.293 3.293a1 1 0 11-1.414 1.414L6 7.414V11a1 1 0 11-2 0V4z" />
-            </svg>
-            Deshacer
-          </button>
-          <button
-            onclick="redoAction()"
-            class="w-full py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors flex items-center justify-center"
-            aria-label="Rehacer Acción"
-          >
-            <!-- Icono de rehacer -->
-            <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M15 4a1 1 0 00-1 1v5.586l-3.293-3.293a1 1 0 00-1.414 1.414L13.586 12H9a1 1 0 100 2h6a1 1 0 001-1V5a1 1 0 00-1-1z" />
-            </svg>
-            Rehacer
-          </button>
-        </div>
-
-        <!-- Arrastrar y Soltar Archivos -->
-        <div class="mb-4">
-          <h4 class="text-lg font-semibold mb-2">Arrastrar y Soltar Archivos</h4>
-          <div
-            id="dragDropArea"
-            class="w-full p-4 border-2 border-dashed border-gray-300 rounded-md text-center text-gray-500 hover:border-blue-500 transition-colors"
-            aria-label="Área de Arrastrar y Soltar Archivos"
-          >
-            Arrastra y suelta tus archivos aquí
+        <!-- Contenedor de la cuadrícula de controles -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Columna 1 -->
+          <div class="space-y-4">
+            <!-- Botones de acción -->
+            <div class="space-y-2">
+              <button
+                onclick="changeImage()"
+                class="w-full py-3 bg-[#0B1A33] text-white rounded-md hover:bg-[#1f2a44] transition-colors flex items-center justify-center"
+                aria-label="Cargar Imagen"
+              >
+                <!-- Icono de imagen -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16v1H4v-1z" />
+                </svg>
+                Cargar Imagen
+              </button>
+              <button
+                onclick="changeVideo()"
+                class="w-full py-3 bg-[#0B1A33] text-white rounded-md hover:bg-[#1f2a44] transition-colors flex items-center justify-center"
+                aria-label="Cargar Video"
+              >
+                <!-- Icono de video -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m0 0l-4.553 2.276A1 1 0 019 16.382V7.618a1 1 0 011.447-.894L15 10z" />
+                </svg>
+                Cargar Video
+              </button>
+            </div>
+    
+            <!-- Slideshow Controls -->
+            <div class="space-y-2">
+              <h4 class="text-lg font-semibold">Slideshow</h4>
+              <button
+                onclick="startSlideshow()"
+                class="w-full py-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors flex items-center justify-center"
+                aria-label="Iniciar Slideshow"
+              >
+                <!-- Icono de play -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6 4l12 6-12 6V4z" />
+                </svg>
+                Iniciar Slideshow
+              </button>
+              <button
+                onclick="pauseSlideshow()"
+                class="w-full py-3 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors flex items-center justify-center"
+                aria-label="Pausar Slideshow"
+              >
+                <!-- Icono de pausa -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6 4h2v12H6V4zM12 4h2v12h-2V4z" />
+                </svg>
+                Pausar Slideshow
+              </button>
+            </div>
+    
+            <!-- Selector de color de fondo -->
+            <div class="space-y-2">
+              <h4 class="text-lg font-semibold">Fondo de Color</h4>
+              <select
+                id="colorPicker"
+                onchange="changeBackgroundColor(event)"
+                class="w-full p-3 border border-gray-300 rounded-md"
+                aria-label="Seleccionar Color de Fondo"
+              >
+                <option value="">Selecciona un color</option>
+                <option value="bg-pink-100">Rosa Pastel</option>
+                <option value="bg-blue-100">Azul Pastel</option>
+                <option value="bg-green-100">Verde Pastel</option>
+                <option value="bg-yellow-100">Amarillo Pastel</option>
+                <option value="bg-purple-100">Púrpura Pastel</option>
+                <option value="bg-teal-100">Verde Azulado Pastel</option>
+                <option value="bg-orange-100">Naranja Pastel</option>
+                <option value="bg-indigo-100">Índigo Pastel</option>
+              </select>
+    
+              <h4 class="text-lg font-semibold">Fondo de Color Personalizado</h4>
+              <input
+                type="color"
+                id="customColorPicker"
+                onchange="changeCustomBackgroundColor(event)"
+                class="w-full h-10 p-0 border border-gray-300 rounded-md"
+                aria-label="Seleccionar Color Personalizado"
+              />
+            </div>
+    
+            <!-- Agregar Texto Superpuesto -->
+            <div class="space-y-2">
+              <h4 class="text-lg font-semibold">Texto Superpuesto</h4>
+              <input
+                type="text"
+                id="overlayText"
+                placeholder="Ingrese el texto"
+                class="w-full p-3 border border-gray-300 rounded-md"
+                aria-label="Ingresar Texto Superpuesto"
+              />
+              <input
+                type="color"
+                id="textColorPicker"
+                onchange="changeTextColor(event)"
+                class="w-full h-10 p-0 border border-gray-300 rounded-md"
+                aria-label="Seleccionar Color de Texto"
+              />
+              <button
+                onclick="addOverlayText()"
+                class="w-full py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center justify-center"
+                aria-label="Añadir Texto Superpuesto"
+              >
+                <!-- Icono de texto -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5 4h10v2H5V4zm0 4h10v2H5V8zm0 4h10v2H5v-2z" />
+                </svg>
+                Añadir Texto
+              </button>
+    
+              <!-- Posición del Texto -->
+              <h4 class="text-lg font-semibold mt-4">Posición del Texto</h4>
+              <select
+                id="textPositionPicker"
+                onchange="changeTextPosition(event)"
+                class="w-full p-3 border border-gray-300 rounded-md"
+                aria-label="Seleccionar Posición del Texto"
+              >
+                <option value="top-left">Arriba Izquierda</option>
+                <option value="top-center">Arriba Centro</option>
+                <option value="top-right">Arriba Derecha</option>
+                <option value="center-left">Centro Izquierda</option>
+                <option value="center">Centro</option>
+                <option value="center-right">Centro Derecha</option>
+                <option value="bottom-left">Abajo Izquierda</option>
+                <option value="bottom-center">Abajo Centro</option>
+                <option value="bottom-right">Abajo Derecha</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Columna 2 -->
+          <div class="space-y-4">
+            <!-- Filtros de Imagen/Video -->
+            <div class="space-y-2">
+              <h4 class="text-lg font-semibold">Filtros de Imagen/Video</h4>
+              <select
+                id="filterPicker"
+                onchange="applyFilter(event)"
+                class="w-full p-3 border border-gray-300 rounded-md"
+                aria-label="Seleccionar Filtro"
+              >
+                <option value="none">Ninguno</option>
+                <option value="grayscale">Blanco y Negro</option>
+                <option value="sepia">Sepia</option>
+                <option value="blur">Desenfoque</option>
+                <option value="brightness">Brillo</option>
+              </select>
+            </div>
+    
+            <!-- Control de Volumen -->
+            <div class="space-y-2">
+              <h4 class="text-lg font-semibold">Control de Volumen</h4>
+              <input
+                type="range"
+                id="volumeControl"
+                min="0"
+                max="1"
+                step="0.01"
+                onchange="adjustVolume(event)"
+                class="w-full"
+                aria-label="Control de Volumen"
+              />
+            </div>
+    
+            <!-- Modo Pantalla Completa -->
+            <div class="space-y-2">
+              <button
+                onclick="toggleFullScreen()"
+                class="w-full py-3 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition-colors flex items-center justify-center"
+                aria-label="Activar Pantalla Completa"
+              >
+                <!-- Icono de pantalla completa -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M4 3a1 1 0 00-1 1v4a1 1 0 001 1h1v2H3a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1v-1h2v1a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 00-1-1h-1v-2h1a1 1 0 001-1V4a1 1 0 00-1-1H4z" />
+                </svg>
+                Pantalla Completa
+              </button>
+            </div>
+    
+            <!-- Controles de Guardar/Cargar Configuración -->
+            <div class="space-y-2">
+              <button
+                onclick="saveConfiguration()"
+                class="w-full py-3 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors flex items-center justify-center"
+                aria-label="Guardar Configuración"
+              >
+                <!-- Icono de guardar -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M17 3a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V7l-4-4z" />
+                </svg>
+                Guardar Configuración
+              </button>
+              <button
+                onclick="loadConfiguration()"
+                class="w-full py-3 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors flex items-center justify-center"
+                aria-label="Cargar Configuración"
+              >
+                <!-- Icono de cargar -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 7V3L6 10l7 7v-4h4V7h-4z" />
+                </svg>
+                Cargar Configuración
+              </button>
+            </div>
+    
+            <!-- Controles de Deshacer/Rehacer -->
+            <div class="space-y-2">
+              <h4 class="text-lg font-semibold">Historial de Cambios</h4>
+              <button
+                onclick="undoAction()"
+                class="w-full py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors flex items-center justify-center"
+                aria-label="Deshacer Acción"
+              >
+                <!-- Icono de deshacer -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5 4a1 1 0 011-1h5a1 1 0 010 2H7.414l3.293 3.293a1 1 0 11-1.414 1.414L6 7.414V11a1 1 0 11-2 0V4z" />
+                </svg>
+                Deshacer
+              </button>
+              <button
+                onclick="redoAction()"
+                class="w-full py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors flex items-center justify-center"
+                aria-label="Rehacer Acción"
+              >
+                <!-- Icono de rehacer -->
+                <svg class="h-6 w-6 mr-2" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M15 4a1 1 0 00-1 1v5.586l-3.293-3.293a1 1 0 00-1.414 1.414L13.586 12H9a1 1 0 100 2h6a1 1 0 001-1V5a1 1 0 00-1-1z" />
+                </svg>
+                Rehacer
+              </button>
+            </div>
+    
+            <!-- Arrastrar y Soltar Archivos -->
+            <div class="space-y-2">
+              <h4 class="text-lg font-semibold">Arrastrar y Soltar Archivos</h4>
+              <div
+                id="dragDropArea"
+                class="w-full p-6 border-2 border-dashed border-gray-300 rounded-md text-center text-gray-500 hover:border-blue-500 transition-colors"
+                aria-label="Área de Arrastrar y Soltar Archivos"
+              >
+                Arrastra y suelta tus archivos aquí
+              </div>
+            </div>
           </div>
         </div>
-        
+    
         <!-- Indicadores de Slideshow -->
-        <div id="slideshowIndicators" class="flex justify-center mt-4">
+        <div id="slideshowIndicators" class="flex justify-center mt-6">
           <!-- Se generarán dinámicamente -->
         </div>
-        
+    
         <!-- Input de archivo (hidden) -->
         <input
           type="file"
@@ -285,22 +317,22 @@
           aria-label="Seleccionar Archivos"
         />
       </div>
-
+  
       <!-- Contenedor del fondo de la imagen o video -->
       <div
         id="backgroundContainer"
-        class="flex-grow min-h-screen bg-gray-300 rounded-lg overflow-hidden flex justify-center items-center transition-colors duration-500 relative"
+        class="flex-grow min-h-screen bg-gray-300 rounded-lg overflow-hidden flex justify-center items-center transition-colors duration-500 relative ml-6"
         aria-label="Contenedor de Fondo"
       >
         <!-- Aquí se insertará la imagen, video o texto superpuesto -->
       </div>
     </div>
-
+  
     <!-- Notificación -->
-    <div id="notification" class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md hidden">
+    <div id="notification" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-md hidden">
       <!-- Mensajes de notificación -->
     </div>
-
+  
     <!-- Scripts -->
     <script src="js/script.js"></script>
   </body>
