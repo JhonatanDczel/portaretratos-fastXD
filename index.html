@@ -32,12 +32,29 @@
         border-color: #3b82f6; /* Azul Tailwind */
         background-color: #e0f2fe; /* Azul claro */
       }
+
+      /* Estilos para la transición de opacidad */
+      .transition-fade {
+        transition: opacity 0.5s ease-in-out;
+      }
+      .hidden-opacity {
+        opacity: 0;
+      }
+      .visible-opacity {
+        opacity: 1;
+      }
+
+      /* Estilos para las superposiciones */
+      .overlay {
+        position: absolute;
+        pointer-events: none; /* Permite interactuar con la media subyacente */
+      }
     </style>
   </head>
   <body class="bg-gray-100 font-sans h-full">
     <div class="flex justify-center items-center min-h-screen p-4">
       <!-- Contenedor de controles -->
-      <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-[30rem]">
+      <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-[31rem]">
         <h3 class="text-2xl font-semibold mb-6 flex items-center">
           <!-- Icono de control -->
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,7 +94,7 @@
                 Cargar Video
               </button>
             </div>
-    
+
             <!-- Slideshow Controls -->
             <div class="space-y-2">
               <h4 class="text-lg font-semibold">Slideshow</h4>
@@ -104,7 +121,7 @@
                 Pausar Slideshow
               </button>
             </div>
-    
+
             <!-- Selector de color de fondo -->
             <div class="space-y-2">
               <h4 class="text-lg font-semibold">Fondo de Color</h4>
@@ -124,7 +141,7 @@
                 <option value="bg-orange-100">Naranja Pastel</option>
                 <option value="bg-indigo-100">Índigo Pastel</option>
               </select>
-    
+
               <h4 class="text-lg font-semibold">Fondo de Color Personalizado</h4>
               <input
                 type="color"
@@ -134,7 +151,7 @@
                 aria-label="Seleccionar Color Personalizado"
               />
             </div>
-    
+
             <!-- Agregar Texto Superpuesto -->
             <div class="space-y-2">
               <h4 class="text-lg font-semibold">Texto Superpuesto</h4>
@@ -163,7 +180,7 @@
                 </svg>
                 Añadir Texto
               </button>
-    
+
               <!-- Posición del Texto -->
               <h4 class="text-lg font-semibold mt-4">Posición del Texto</h4>
               <select
@@ -203,7 +220,7 @@
                 <option value="brightness">Brillo</option>
               </select>
             </div>
-    
+
             <!-- Control de Volumen -->
             <div class="space-y-2">
               <h4 class="text-lg font-semibold">Control de Volumen</h4>
@@ -218,7 +235,7 @@
                 aria-label="Control de Volumen"
               />
             </div>
-    
+
             <!-- Modo Pantalla Completa -->
             <div class="space-y-2">
               <button
@@ -233,7 +250,7 @@
                 Pantalla Completa
               </button>
             </div>
-    
+
             <!-- Controles de Guardar/Cargar Configuración -->
             <div class="space-y-2">
               <button
@@ -259,7 +276,7 @@
                 Cargar Configuración
               </button>
             </div>
-    
+
             <!-- Controles de Deshacer/Rehacer -->
             <div class="space-y-2">
               <h4 class="text-lg font-semibold">Historial de Cambios</h4>
@@ -286,7 +303,7 @@
                 Rehacer
               </button>
             </div>
-    
+
             <!-- Arrastrar y Soltar Archivos -->
             <div class="space-y-2">
               <h4 class="text-lg font-semibold">Arrastrar y Soltar Archivos</h4>
@@ -321,10 +338,15 @@
       <!-- Contenedor del fondo de la imagen o video -->
       <div
         id="backgroundContainer"
-        class="flex-grow min-h-screen bg-gray-300 rounded-lg overflow-hidden flex justify-center items-center transition-colors duration-500 relative ml-6"
+        class="flex-grow self-center min-h-screen bg-gray-300 rounded-lg overflow-hidden relative transition-colors duration-500 ml-6 max-w-[100vh - 32rem]"
         aria-label="Contenedor de Fondo"
       >
-        <!-- Aquí se insertará la imagen, video o texto superpuesto -->
+        <div id="mediaContainer" class="w-full h-full flex justify-center items-center">
+          <!-- Media (imagen o video) se insertará aquí -->
+        </div>
+        <div id="overlayContainer" class="absolute top-0 left-0 w-full h-full pointer-events-none">
+          <!-- Texto superpuesto se insertará aquí -->
+        </div>
       </div>
     </div>
   

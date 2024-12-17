@@ -7,6 +7,10 @@ let mediaList = [];
 const actionHistory = [];
 const redoStack = [];
 
+// Obtener referencias a los contenedores
+const mediaContainer = document.getElementById('mediaContainer');
+const overlayContainer = document.getElementById('overlayContainer');
+
 // Función para cambiar la imagen
 function changeImage() {
   document.getElementById('fileInput').click();
@@ -31,19 +35,17 @@ function handleFileChange(event) {
 
 // Función para mostrar la media actual
 function displayMedia(file) {
-  const backgroundContainer = document.getElementById('backgroundContainer');
-
   // Añadir clase de transición
-  backgroundContainer.classList.add('transition-fade', 'hidden-opacity');
+  mediaContainer.classList.add('transition-fade', 'hidden-opacity');
 
   setTimeout(() => {
-    backgroundContainer.innerHTML = ''; // Limpiar contenido previo
+    mediaContainer.innerHTML = ''; // Limpiar contenido previo
     removeFilters();
 
-    // Remover cualquier clase de color de fondo personalizada
+    // Remover cualquier clase de color de fondo personalizada en backgroundContainer
+    const backgroundContainer = document.getElementById('backgroundContainer');
     backgroundContainer.style.backgroundColor = '';
-
-    // Obtener clases de Tailwind para el color de fondo
+    
     const tailwindColors = [
       'bg-pink-100',
       'bg-blue-100',
@@ -64,19 +66,19 @@ function displayMedia(file) {
       img.src = fileURL;
       img.className = 'max-w-full max-h-full object-contain';
       img.alt = 'Imagen cargada';
-      backgroundContainer.appendChild(img);
+      mediaContainer.appendChild(img);
     } else if (file.type.startsWith('video/')) {
       const video = document.createElement('video');
       video.src = fileURL;
       video.controls = true;
       video.className = 'max-w-full max-h-full object-contain';
       video.alt = 'Video cargado';
-      backgroundContainer.appendChild(video);
+      mediaContainer.appendChild(video);
     }
 
     // Remover clase 'hidden-opacity' y añadir 'visible-opacity' para mostrar con transición
-    backgroundContainer.classList.remove('hidden-opacity');
-    backgroundContainer.classList.add('visible-opacity');
+    mediaContainer.classList.remove('hidden-opacity');
+    mediaContainer.classList.add('visible-opacity');
 
     updateSlideshowIndicators();
   }, 500); // Duración de la transición
@@ -113,10 +115,6 @@ function changeBackgroundColor(event) {
   const colorClass = event.target.value;
   const backgroundContainer = document.getElementById('backgroundContainer');
 
-  // Limpiar contenido previo (imagen o video)
-  backgroundContainer.innerHTML = '';
-  removeFilters();
-
   // Remover cualquier clase de color de fondo existente
   const colorClasses = [
     'bg-pink-100',
@@ -151,10 +149,6 @@ function changeCustomBackgroundColor(event) {
   const color = event.target.value;
   const backgroundContainer = document.getElementById('backgroundContainer');
 
-  // Limpiar contenido previo (imagen o video)
-  backgroundContainer.innerHTML = '';
-  removeFilters();
-
   // Remover cualquier clase de color de fondo existente
   const colorClasses = [
     'bg-pink-100',
@@ -179,12 +173,15 @@ function changeCustomBackgroundColor(event) {
 function addOverlayText(actionPayload = null) {
   const text = actionPayload ? actionPayload.text : document.getElementById('overlayText').value;
   const color = actionPayload ? actionPayload.color : document.getElementById('textColorPicker').value;
-  const backgroundContainer = document.getElementById('backgroundContainer');
+  const overlayContainerElement = overlayContainer; // Referencia directa
 
   if (!text) {
     showNotification('No se ingresó texto para superponer.', 'warning');
     return;
   }
+
+  // Limpiar overlays existentes si solo se permite uno
+  overlayContainerElement.innerHTML = '';
 
   // Crear elemento de texto
   const overlay = document.createElement('div');
@@ -193,17 +190,15 @@ function addOverlayText(actionPayload = null) {
   overlay.className = 'overlay text-xl font-bold';
 
   // Establecer posición inicial
-  setOverlayPosition(overlay, 'top-left');
+  const initialPosition = 'top-left'; // Puedes cambiar esto si lo deseas
+  setOverlayPosition(overlay, initialPosition);
 
-  // Asegurarse de que el contenedor tenga posición relativa
-  backgroundContainer.classList.add('relative');
-
-  // Añadir el texto al contenedor
-  backgroundContainer.appendChild(overlay);
+  // Añadir el texto al contenedor de superposiciones
+  overlayContainerElement.appendChild(overlay);
 
   // Añadir la acción al historial
   if (!actionPayload) {
-    addAction({ type: 'addText', payload: { text, color, position: 'top-left' } });
+    addAction({ type: 'addText', payload: { text, color, position: initialPosition } });
     showNotification('Texto superpuesto añadido.', 'success');
   }
 }
@@ -211,7 +206,7 @@ function addOverlayText(actionPayload = null) {
 // Función para cambiar el color del texto superpuesto
 function changeTextColor(event) {
   const color = event.target.value;
-  const overlay = document.querySelector('#backgroundContainer .overlay');
+  const overlay = overlayContainer.querySelector('.overlay');
 
   if (overlay) {
     overlay.style.color = color;
@@ -225,7 +220,7 @@ function changeTextColor(event) {
 // Función para cambiar la posición del texto superpuesto
 function changeTextPosition(event) {
   const position = event.target.value;
-  const overlay = document.querySelector('#backgroundContainer .overlay');
+  const overlay = overlayContainer.querySelector('.overlay');
 
   if (overlay) {
     setOverlayPosition(overlay, position);
@@ -298,7 +293,7 @@ function setOverlayPosition(overlay, position) {
 // Función para aplicar filtros a la media
 function applyFilter(event) {
   const filter = event.target.value;
-  const media = document.querySelector('#backgroundContainer img, #backgroundContainer video');
+  const media = mediaContainer.querySelector('img, video');
 
   if (media) {
     switch (filter) {
@@ -326,7 +321,7 @@ function applyFilter(event) {
 
 // Función para remover filtros
 function removeFilters() {
-  const media = document.querySelector('#backgroundContainer img, #backgroundContainer video');
+  const media = mediaContainer.querySelector('img, video');
   if (media) {
     media.style.filter = 'none';
   }
@@ -335,7 +330,7 @@ function removeFilters() {
 // Función para ajustar el volumen de videos
 function adjustVolume(event) {
   const volume = event.target.value;
-  const video = document.querySelector('#backgroundContainer video');
+  const video = mediaContainer.querySelector('video');
 
   if (video) {
     video.volume = volume;
@@ -361,10 +356,11 @@ function toggleFullScreen() {
 
 // Función para guardar configuración en localStorage
 function saveConfiguration() {
-  const backgroundColor = getComputedStyle(document.getElementById('backgroundContainer')).backgroundColor;
-  const mediaElement = document.querySelector('#backgroundContainer img, #backgroundContainer video');
+  const backgroundContainer = document.getElementById('backgroundContainer');
+  const backgroundColor = getComputedStyle(backgroundContainer).backgroundColor;
+  const mediaElement = mediaContainer.querySelector('img, video');
   const mediaSrc = mediaElement ? mediaElement.src : '';
-  const overlay = document.querySelector('#backgroundContainer .overlay');
+  const overlay = overlayContainer.querySelector('.overlay');
   const overlayText = overlay ? overlay.innerText : '';
   const textColor = overlay ? overlay.style.color : '#000000';
   const textPosition = overlay ? getOverlayPosition(overlay) : 'top-left';
@@ -395,7 +391,12 @@ function loadConfiguration() {
   }
 
   const backgroundContainer = document.getElementById('backgroundContainer');
-  backgroundContainer.innerHTML = ''; // Limpiar contenido previo
+  backgroundContainer.classList.remove(...backgroundContainer.classList);
+  backgroundContainer.className = 'flex-grow min-h-screen bg-gray-300 rounded-lg overflow-hidden relative transition-colors duration-500 ml-6';
+
+  // Limpiar media y overlays
+  mediaContainer.innerHTML = '';
+  overlayContainer.innerHTML = '';
   removeFilters();
 
   // Aplicar color de fondo
@@ -409,14 +410,14 @@ function loadConfiguration() {
       img.src = config.mediaSrc;
       img.className = 'max-w-full max-h-full object-contain';
       img.alt = 'Imagen cargada';
-      backgroundContainer.appendChild(img);
+      mediaContainer.appendChild(img);
     } else if (['mp4', 'webm', 'ogg'].includes(fileType)) {
       const video = document.createElement('video');
       video.src = config.mediaSrc;
       video.controls = true;
       video.className = 'max-w-full max-h-full object-contain';
       video.volume = config.volume;
-      backgroundContainer.appendChild(video);
+      mediaContainer.appendChild(video);
     }
   }
 
@@ -427,8 +428,7 @@ function loadConfiguration() {
     overlay.style.color = config.textColor;
     overlay.className = 'overlay text-xl font-bold';
     setOverlayPosition(overlay, config.textPosition);
-    backgroundContainer.classList.add('relative');
-    backgroundContainer.appendChild(overlay);
+    overlayContainer.appendChild(overlay);
   }
 
   // Aplicar filtro si existe
@@ -438,7 +438,7 @@ function loadConfiguration() {
 
   // Ajustar volumen si es video
   if (config.volume && config.volume !== 1) {
-    const video = document.querySelector('#backgroundContainer video');
+    const video = mediaContainer.querySelector('video');
     if (video) {
       video.volume = config.volume;
       document.getElementById('volumeControl').value = config.volume;
@@ -451,7 +451,7 @@ function loadConfiguration() {
 
 // Función para aplicar filtro por valor (usada en cargar configuración)
 function applyFilterByValue(filter) {
-  const media = document.querySelector('#backgroundContainer img, #backgroundContainer video');
+  const media = mediaContainer.querySelector('img, video');
 
   if (media) {
     switch (filter) {
@@ -476,9 +476,12 @@ function applyFilterByValue(filter) {
 // Función para agregar texto superpuesto desde acción
 function addOverlayTextFromAction(payload) {
   const { text, color, position } = payload;
-  const backgroundContainer = document.getElementById('backgroundContainer');
+  const overlayContainerElement = overlayContainer;
 
   if (!text) return;
+
+  // Limpiar overlays existentes si solo se permite uno
+  overlayContainerElement.innerHTML = '';
 
   // Crear elemento de texto
   const overlay = document.createElement('div');
@@ -489,11 +492,8 @@ function addOverlayTextFromAction(payload) {
   // Establecer posición
   setOverlayPosition(overlay, position);
 
-  // Asegurarse de que el contenedor tenga posición relativa
-  backgroundContainer.classList.add('relative');
-
-  // Añadir el texto al contenedor
-  backgroundContainer.appendChild(overlay);
+  // Añadir el texto al contenedor de superposiciones
+  overlayContainerElement.appendChild(overlay);
 }
 
 // Función para obtener la posición actual del overlay
@@ -554,16 +554,16 @@ function setupDragAndDrop() {
 
   dragDropArea.addEventListener('dragover', (event) => {
     event.preventDefault();
-    dragDropArea.classList.add('drag-over');
+    dragDropArea.classList.add('dragover');
   });
 
   dragDropArea.addEventListener('dragleave', () => {
-    dragDropArea.classList.remove('drag-over');
+    dragDropArea.classList.remove('dragover');
   });
 
   dragDropArea.addEventListener('drop', (event) => {
     event.preventDefault();
-    dragDropArea.classList.remove('drag-over');
+    dragDropArea.classList.remove('dragover');
 
     const files = event.dataTransfer.files;
     if (files.length) {
@@ -575,9 +575,6 @@ function setupDragAndDrop() {
     }
   });
 }
-
-// Función para resaltar la media activa
-// Ya está implementado en updateSlideshowIndicators()
 
 // Función para guardar acciones en el historial
 function addAction(action) {
@@ -612,7 +609,7 @@ function redoAction() {
 function performUndo(action) {
   switch (action.type) {
     case 'addText':
-      const overlays = document.querySelectorAll('#backgroundContainer .overlay');
+      const overlays = overlayContainer.querySelectorAll('.overlay');
       if (overlays.length > 0) {
         const lastOverlay = overlays[overlays.length - 1];
         lastOverlay.remove();
@@ -620,18 +617,22 @@ function performUndo(action) {
       }
       break;
     case 'changeBackgroundColor':
-      // No se implementa en este ejemplo para simplificar
-      // Podrías almacenar el historial de colores y revertir al anterior
+      // Aquí podrías implementar una lógica para revertir al color anterior
+      // Por simplicidad, se restablece al color por defecto
+      const backgroundContainer = document.getElementById('backgroundContainer');
+      backgroundContainer.classList.remove(...backgroundContainer.classList);
+      backgroundContainer.className = 'flex-grow min-h-screen bg-gray-300 rounded-lg overflow-hidden relative transition-colors duration-500 ml-6';
+      showNotification('Color de fondo deshecho al valor por defecto.', 'info');
       break;
     case 'applyFilter':
-      const media = document.querySelector('#backgroundContainer img, #backgroundContainer video');
+      const media = mediaContainer.querySelector('img, video');
       if (media) {
         media.style.filter = 'none';
       }
       showNotification('Filtro deshecho.', 'info');
       break;
     case 'adjustVolume':
-      const video = document.querySelector('#backgroundContainer video');
+      const video = mediaContainer.querySelector('video');
       if (video) {
         video.volume = 1; // Valor por defecto
         document.getElementById('volumeControl').value = 1;
@@ -656,17 +657,18 @@ function performRedo(action) {
       addOverlayText(action.payload);
       break;
     case 'changeBackgroundColor':
+      const backgroundContainer = document.getElementById('backgroundContainer');
       if (action.payload.colorClass.startsWith('#')) {
-        document.getElementById('backgroundContainer').style.backgroundColor = action.payload.colorClass;
+        backgroundContainer.style.backgroundColor = action.payload.colorClass;
       } else {
-        document.getElementById('backgroundContainer').classList.add(action.payload.colorClass);
+        backgroundContainer.classList.add(action.payload.colorClass);
       }
       break;
     case 'applyFilter':
       applyFilterByValue(action.payload.filter);
       break;
     case 'adjustVolume':
-      const video = document.querySelector('#backgroundContainer video');
+      const video = mediaContainer.querySelector('video');
       if (video) {
         video.volume = action.payload.volume;
         document.getElementById('volumeControl').value = action.payload.volume;
@@ -692,19 +694,19 @@ function showNotification(message, type = 'success') {
   // Cambiar el color según el tipo
   switch (type) {
     case 'success':
-      notification.classList.remove('bg-red-500', 'bg-yellow-500', 'bg-blue-500');
+      notification.classList.remove('bg-red-500', 'bg-yellow-500', 'bg-blue-500', 'bg-gray-500');
       notification.classList.add('bg-green-500');
       break;
     case 'error':
-      notification.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-blue-500');
+      notification.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-blue-500', 'bg-gray-500');
       notification.classList.add('bg-red-500');
       break;
     case 'warning':
-      notification.classList.remove('bg-green-500', 'bg-red-500', 'bg-blue-500');
+      notification.classList.remove('bg-green-500', 'bg-red-500', 'bg-blue-500', 'bg-gray-500');
       notification.classList.add('bg-yellow-500');
       break;
     case 'info':
-      notification.classList.remove('bg-green-500', 'bg-red-500', 'bg-yellow-500');
+      notification.classList.remove('bg-green-500', 'bg-red-500', 'bg-yellow-500', 'bg-gray-500');
       notification.classList.add('bg-blue-500');
       break;
     default:
@@ -720,9 +722,6 @@ function showNotification(message, type = 'success') {
     notification.classList.add('hidden');
   }, 3000);
 }
-
-// Función para guardar y cargar configuraciones
-// Ya implementadas anteriormente
 
 // Inicializar drag and drop
 window.onload = () => {
